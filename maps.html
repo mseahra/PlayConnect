@@ -3,6 +3,15 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+
+  #map{
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    height: 500px;
+    width: 100px;
+  }
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -41,6 +50,18 @@ body {
   <h2>Find a player</h2>
   <h3>Maps</h3>
 </div>
+
+<script>
+  function initMap() {
+    var location = {lat: -25.363, lng: 131.044};
+    var map = new google.maps.Map(document.getElementById('Maps'), {
+      zoom: 4,
+      center: location
+    });
+
+  }
+</script>
+<script async defer src="https://maps.google.com/map/api/js?key=AIzaSyCMhcwhGqHUoZ0yCTQmNTBARlpuY2h4K2E&callback=initMap"></script>
 
 </body>
 </html>
