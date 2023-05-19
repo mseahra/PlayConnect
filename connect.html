@@ -3,38 +3,58 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.topnav {
-  overflow: hidden;
-}
-
-.topnav a {
-  float: left;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-.topnav a:hover {
-  color: black;
-}
-
-.topnav a.active {
-}
+  body{
+      margin: 0;
+      padding: 0;
+      background-color: f2f2f2;
+      font-family: Arial, sans-serif;
+  }
+  .container{
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+  }
+  .logo{
+      position: absolute;
+      top: 25px;
+      right: 40px;
+      width: 40px;
+      height: 40px;
+      background-image: url(football.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  .button{
+      display: inline-block;
+padding: 10px 20px;
+margin: 10px;
+border-radius: 5px;
+background-color: darkcyan;
+color: #fff;
+font-size: 16px;
+text-align: center;
+text-decoration: none;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+transition: background-color 0.3s ease;
+  }
+  .button:hover {
+background-color: cyan;
+  }
 </style>
 </head>
 <body>
-
-<div class="topnav">
-  <a class="active" href="index.html">Home</a>
-  <a href="maps.html">Maps</a>
-  <a href="connect.html">Connect</a>
-  <a href="login.html">Log In</a>
+<div class="logo"></div>
+<div class="container">
+<a href="index.html" class="button">Home</a>
+  <a href="connect.html" class="button">Connect</a>
+<a href="maps.html" class="button">Maps</a>
+<a href="login.html" class="button">Log In</a>
 </div>
 
 <div style="padding-left:16px">

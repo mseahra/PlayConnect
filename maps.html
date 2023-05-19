@@ -3,51 +3,131 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+  body{
+    margin: 0;
+    padding: 0;
+    background-color: f2f2f2;
+    font-family: Arial, sans-serif;
+  }
+  .container{
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+  .logo{
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    width: 40px;
+    height: 40px;
+    background-image: url(football.png);
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  .button{
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: darkcyan;
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+  }
 
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
+  .button:hover {
+background-color: cyan;
+  }
 
-.topnav {
-  overflow: hidden;
-}
+  div {
+    text-align: center;
+  }
 
-.topnav a {
-  float: left;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
+  /* Adjust the map container size and position */
+  #map {
+    height: 400px;
+    width: 100%;
+  }
 
-.topnav a:hover {
-  color: black;
-}
-
-.topnav a.active {
-}
-
-div {text-align: center;}
 </style>
 </head>
 <body>
-
-<div class="topnav">
-  <a class="active" href="index.html">Home</a>
-  <a href="maps.html">Maps</a>
-  <a href="connect.html">Connect</a>
-  <a href="login.html">Log In</a>
+<div class="logo"></div>
+<div class="container">
+<a href="index.html" class="button">Home</a>
+  <a href="connect.html" class="button">Connect</a>
+<a href="maps.html" class="button">Maps</a>
+<a href="login.html" class="button">Log In</a>
 </div>
 
-<div style="padding-left:16px">
-  <h2>Find a player</h2>
-  <h3>Maps</h3>
-</div>
+</body>
 
-<div>
-  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2486.0989276871655!2d-0.24683828423189344!3d51.45634007962671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760ee6c0c242eb%3A0x3a5665ce81752bbf!2sUniversity%20of%20Roehampton%20London!5e0!3m2!1sen!2suk!4v1675260073501!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-</div>
+<body>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+
+  <div id="map"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+  <script>
+    var map = L.map('map').setView([51.510171,-0.399847], 12);
+    // Replace LATITUDE and LONGITUDE with the coordinates of your desired location
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    // Create a user profile with name, address, and preferred sports choice
+    var userProfiles = [
+      {
+        name: 'Mandev Seahra',
+        address: '20 Allendale Avenue, Southall',
+        sports: 'Football',
+        latitude: 51.518960,
+        longitude: -0.372410
+      },
+      {
+        name: 'Jane Smith',
+        address: '40 Melbourne Avenue, West Ealing',
+        sports: 'Football',
+        latitude: 51.508485,
+        longitude: -0.324082
+      },
+      {
+        name: 'David Johnson',
+        address: '20 Roehampton Lane, Roehampton',
+        sports: 'Football',
+        latitude: 51.464068,
+        longitude: -0.243576
+      }
+    ];
+
+    // Loop through user profiles and add markers with popups
+    for (var i = 0; i < userProfiles.length; i++) {
+      var userProfile = userProfiles[i];
+      var marker = L.marker([userProfile.latitude, userProfile.longitude]).addTo(map);
+
+      var popupContent = '<h3>' + userProfile.name + '</h3>' +
+        '<p><strong>Address:</strong> ' + userProfile.address + '</p>' +
+        '<p><strong>Preferred Sports:</strong> ' + userProfile.sports + '</p>';
+
+      marker.bindPopup(popupContent);
+
+      // Add click event listener to open the popup
+      marker.on('click', function(e) {
+        this.openPopup();
+      });
+    }
+    
+  </script>
 </body>
 </html>
