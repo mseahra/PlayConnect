@@ -1,92 +1,115 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body{
-    margin: 0;
-    padding: 0;
-    background-color: f2f2f2;
-    font-family: Arial, sans-serif;
-  }
-  .container{
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-  }
-  .logo{
-    position: absolute;
-    top: 25px;
-    right: 40px;
-    width: 40px;
-    height: 40px;
-    background-image: url(football.png);
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  }
-  .button{
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    background-color: darkcyan;
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    text-decoration: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .sidebar {
+      flex: 1;
+      max-width: 20%;
+      height: 100vh;
+      background-color: #f2f2f2;
+      padding: 20px;
+      overflow-y: scroll;
+    }
+
+    .map-container {
+      flex: 4;
+      height: calc(100vh - 40px);
+    }
+
+    .user-profiles {
+      margin-top: 20px;
+    }
+
+    .user-profile {
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .user-profile:hover {
+      background-color: #e6e6e6;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 5px;
+      background-color: darkcyan;
+      color: white;
+      font-size: 16px;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: cyan;
+    }
+
+    .logo{
+      position: absolute;
+      top: 25px;
+      right: 40px;
+      width: 40px;
+      height: 40px;
+      background-image: url(football.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
 
-  .button:hover {
-background-color: cyan;
-  }
-
-  div {
-    text-align: center;
-  }
-
-  /* Adjust the map container size and position */
-  #map {
-    height: 400px;
-    width: 100%;
-  }
-
-</style>
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
 </head>
 <body>
-<div class="logo"></div>
-<div class="container">
-<a href="index.html" class="button">Home</a>
-  <a href="connect.html" class="button">Connect</a>
-<a href="maps.html" class="button">Maps</a>
-<a href="login.html" class="button">Log In</a>
-</div>
+  <div class="logo"></div>
+  <div class="buttons">
+    <a href="index.html" class="button">Home</a>
+    <a href="connect.html" class="button">Connect</a>
+    <a href="maps.html" class="button">Maps</a>
+    <a href="login.html" class="button">Log In</a>
+  </div>
 
-</body>
+  <div class="container">
+    <div class="sidebar">
+      <h2>User Profiles</h2>
+      <div class="user-profiles"></div>
+    </div>
+    <div class="map-container" id="map"></div>
+  </div>
 
-<body>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-
-  <div id="map"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([51.510171,-0.399847], 12);
-    // Replace LATITUDE and LONGITUDE with the coordinates of your desired location
+    var map = L.map('map').setView([51.510171, -0.399847], 12);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
       maxZoom: 18
     }).addTo(map);
 
-    // Create a user profile with name, address, and preferred sports choice
     var userProfiles = [
       {
         name: 'Mandev Seahra',
@@ -111,23 +134,32 @@ background-color: cyan;
       }
     ];
 
-    // Loop through user profiles and add markers with popups
-    for (var i = 0; i < userProfiles.length; i++) {
-      var userProfile = userProfiles[i];
-      var marker = L.marker([userProfile.latitude, userProfile.longitude]).addTo(map);
+    var userProfilesContainer = document.querySelector('.user-profiles');
 
-      var popupContent = '<h3>' + userProfile.name + '</h3>' +
+    userProfiles.forEach(function(userProfile) {
+      var userProfileElement = document.createElement('div');
+      userProfileElement.className = 'user-profile';
+      userProfileElement.innerHTML = '<h3>' + userProfile.name + '</h3>' +
         '<p><strong>Address:</strong> ' + userProfile.address + '</p>' +
         '<p><strong>Preferred Sports:</strong> ' + userProfile.sports + '</p>';
 
-      marker.bindPopup(popupContent);
-
-      // Add click event listener to open the popup
-      marker.on('click', function(e) {
-        this.openPopup();
+      userProfileElement.addEventListener('click', function() {
+        map.panTo([userProfile.latitude, userProfile.longitude]);
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.Marker && layer.getLatLng().equals([userProfile.latitude, userProfile.longitude])) {
+            layer.openPopup();
+          }
+        });
       });
-    }
-    
+
+      userProfilesContainer.appendChild(userProfileElement);
+
+      var marker = L.marker([userProfile.latitude, userProfile.longitude]).addTo(map);
+      var popupContent = '<h3>' + userProfile.name + '</h3>' +
+        '<p><strong>Address:</strong> ' + userProfile.address + '</p>' +
+        '<p><strong>Preferred Sports:</strong> ' + userProfile.sports + '</p>';
+      marker.bindPopup(popupContent);
+    });
   </script>
 </body>
 </html>
