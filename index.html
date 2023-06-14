@@ -1,24 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  body{
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-color: f2f2f2;
       font-family: Arial, sans-serif;
-  }
-  .container{
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
+    }
+
+    .container {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-  }
-  .logo{
+      justify-content: center;
+      height: 75vh;
+    }
+
+    .title {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      width: 500px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .social-links {
+      margin-bottom: 30px;
+    }
+
+    .social-link {
+      display: inline-block;
+      margin: 10px;
+      font-size: 24px;
+      color: darkcyan;
+      text-decoration: none;
+    }
+
+    .social-link i {
+      vertical-align: middle;
+    }
+
+    .sports-fixtures {
+      width: 500px;
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .fixture {
+      margin-bottom: 10px;
+    }
+
+    .fixture strong {
+      display: inline-block;
+      width: 100px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 5px;
+      background-color: darkcyan;
+      color: white;
+      font-size: 16px;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: cyan;
+    }
+
+    .logo{
       position: absolute;
       top: 25px;
       right: 40px;
@@ -30,37 +98,56 @@
       border-radius: 50%;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
-  .button{
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px;
-    border-radius: 5px;
-    background-color: darkcyan;
-    color: #fff;
-    font-size: 16px;
-    text-align: center;
-    text-decoration: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-  }
-  .button:hover {
-background-color: cyan;
-  }
-</style>
+  
+  </style>
 </head>
 <body>
-<div class="logo"></div>
-<div class="container">
-<a href="index.html" class="button">Home</a>
-  <a href="connect.html" class="button">Connect</a>
-<a href="maps.html" class="button">Maps</a>
-<a href="login.html" class="button">Log In</a>
-</div>
+  <div class="logo"></div>
+  <div class="buttons">
+    <a href="index.html" class="button">Home</a>
+    <a href="connect.html" class="button">Connect</a>
+    <a href="maps.html" class="button">Maps</a>
+    <a href="login.html" class="button">Log In</a>
+  </div>
 
-<div style="padding-left:16px">
-  <h2>Find a player</h2>
-  <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
-</div>
+  <div class="container">
+    <h1 class="title">Welcome to the Sports Connect Web Application!</h1>
+    <div class="summary">
+      <p>This web application allows you to connect with other sports enthusiasts, find sports venues, and join events in your area.</p>
+      <p>Stay updated with the latest sports fixtures and connect with fellow sports lovers.</p>
+    </div>
 
+    <div class="sports-fixtures">
+      <h2>Upcoming Sports Fixtures</h2>
+      <div class="fixture">
+        <strong>Date:</strong> May 22, 2023
+        <br>
+        <strong>Sport:</strong> Football
+        <br>
+        <strong>Location:</strong> Goals Wembley
+      </div>
+      <div class="fixture">
+        <strong>Date:</strong> May 25, 2023
+        <br>
+        <strong>Sport:</strong> Basketball
+        <br>
+        <strong>Location:</strong> Shepherds Bush Court
+      </div>
+      <div class="fixture">
+        <strong>Date:</strong> May 28, 2023
+        <br>
+        <strong>Sport:</strong> Tennis
+        <br>
+        <strong>Location:</strong> Elthorne Park
+      </div>
+    </div>
+    <div class="social-links">
+      <a href="https://twitter.com/mandevseahra" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="https://facebook.com/mandevseahra" class="social-link" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://instagram.com/mandevseahra" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://linkedin.com/in/mandevseahra" class="social-link" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </body>
 </html>
