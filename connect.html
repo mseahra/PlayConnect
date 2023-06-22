@@ -5,6 +5,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -154,97 +157,105 @@
   </div>
 
   <script>
-    var eventForm = document.getElementById('eventForm');
-    var eventList = document.querySelector('.event-list');
 
-    eventForm.addEventListener('submit', function(event) {
-      event.preventDefault();
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbUQiKggphds5itr36T2TObwWKyPVQCTo",
+      authDomain: "findaplayer-c9da7.firebaseapp.com",
+      databaseURL: "https://findaplayer-c9da7-default-rtdb.firebaseio.com",
+      projectId: "findaplayer-c9da7",
+      storageBucket: "findaplayer-c9da7.appspot.com",
+      messagingSenderId: "540450240179",
+      appId: "1:540450240179:web:80c4ba68960c27b4f3e2c6"
+  };
+  
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
 
-      var locationInput = document.getElementById('location');
-      var sportSelect = document.getElementById('sport');
-      var playersInput = document.getElementById('players');
+  var eventForm = document.getElementById('eventForm');
+  var eventList = document.querySelector('.event-list');
 
-      var location = locationInput.value.trim();
-      var sport = sportSelect.value;
-      var players = playersInput.value.trim();
+  eventForm.addEventListener('submit', function(event) {
+    event.preventDefault();
 
-      var postcodeRegex = /^[A-Z]{1,2}\d{1,2} ?\d[A-Z]{2}$/i;
+    var locationInput = document.getElementById('location');
+    var sportSelect = document.getElementById('sport');
+    var playersInput = document.getElementById('players');
+    var maxPlayersInput = document.getElementById('maxPlayers');
 
-      var maxPlayersInput = document.getElementById('maxPlayers');
-      var maxPlayers = parseInt(maxPlayersInput.value.trim());
+    var location = locationInput.value.trim();
+    var sport = sportSelect.value;
+    var players = playersInput.value.trim();
+    var maxPlayers = parseInt(maxPlayersInput.value.trim());
 
-      if (maxPlayers < players) {
-        alert('Maximum players cannot be less than the number of players.');
-        return;
-      }
+    // Rest of your form validation logic here
 
-      var availableSpaces = maxPlayers - players;
+    var geocoder = L.Control.Geocoder.nominatim();
+    geocoder.geocode(location, function(results) {
+      if (results.length > 0) {
+        var latitude = results[0].center.lat;
+        var longitude = results[0].center.lng;
 
-
-      if (location === '' || sport.trim() === '' || players === '') {
-        alert('Please fill in all the fields.');
-        return;
-      }
-
-      if (!postcodeRegex.test(location)) {
-        alert('Invalid postcode format. Please enter a valid postcode.');
-        return;
-      }
-
-      var geocoder = L.Control.Geocoder.nominatim();
-      geocoder.geocode(location, function(results) {
-        if (results.length > 0) {
-          var latitude = results[0].center.lat;
-          var longitude = results[0].center.lng;
-
-          var eventItem = document.createElement('div');
-          eventItem.className = 'event-item';
-          eventItem.innerHTML = '<strong>Location:</strong> ' + location + '<br>' +
+        var eventItem = document.createElement('div');
+        eventItem.className = 'event-item';
+        eventItem.innerHTML = '<strong>Location:</strong> ' + location + '<br>' +
           '<strong>Sport:</strong> ' + sport + '<br>' +
           '<strong>Players:</strong> <span class="player-count">' + players + '</span><br>' +
           '<strong>Maximum Players:</strong> ' + maxPlayers + '<br>' +
-          '<strong>Available Spaces:</strong> <span class="available-spaces">' + availableSpaces + '</span><br>' +
+          '<strong>Available Spaces:</strong> <span class="available-spaces">' + (maxPlayers - players) + '</span><br>' +
           '<div class="interact-button">Join Event</div>' +
           '<div class="close-button">&times;</div>';
 
+        eventItem.querySelector('.close-button').addEventListener('click', function() {
+          eventItem.remove();
+        });
 
-          eventItem.querySelector('.close-button').addEventListener('click', function() {
-            eventItem.remove();
-          });
+        eventItem.querySelector('.interact-button').addEventListener('click', function() {
+          var playerCountElement = eventItem.querySelector('.player-count');
+          var availableSpacesElement = eventItem.querySelector('.available-spaces');
 
-          eventItem.querySelector('.interact-button').addEventListener('click', function() {
-            var playerCountElement = eventItem.querySelector('.player-count');
-            var availableSpacesElement = eventItem.querySelector('.available-spaces');
+          var playerCount = parseInt(playerCountElement.textContent);
+          var availableSpaces = parseInt(availableSpacesElement.textContent);
 
-            var playerCount = parseInt(playerCountElement.textContent);
-            var availableSpaces = parseInt(availableSpacesElement.textContent);
+          if (availableSpaces > 0) {
+            playerCount++;
+            availableSpaces--;
+            playerCountElement.textContent = playerCount;
+            availableSpacesElement.textContent = availableSpaces;
+          }            
+        });
 
-            if (availableSpaces > 0) {
-              playerCount++;
-              availableSpaces--;
-              playerCountElement.textContent = playerCount;
-              availableSpacesElement.textContent = availableSpaces;
-            }            
-          });
+        eventList.appendChild(eventItem);
 
-          eventList.appendChild(eventItem);
+        locationInput.value = '';
+        sportSelect.value = '';
+        playersInput.value = '';
 
-          locationInput.value = '';
-          sportSelect.value = '';
-          playersInput.value = '';
+        // Store event data in Firebase
+        database.ref('events').push({
+          location: location,
+          sport: sport,
+          players: players,
+          maxPlayers: maxPlayers
+        }, function(error) {
+          if (error) {
+            console.error("Error storing event data: ", error);
+          } else {
+            console.log("Event data stored successfully!");
+          }
+        });
 
-          // Create a Leaflet map and add a marker for the event location
-          var map = L.map('map').setView([latitude, longitude], 13);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-            maxZoom: 18,
-          }).addTo(map);
-          L.marker([latitude, longitude]).addTo(map);
-        } else {
-          alert('Could not find the coordinates for the given location.');
-        }
-      });
+        // Create a Leaflet map and add a marker for the event location
+        var map = L.map('map').setView([latitude, longitude], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+          maxZoom: 18,
+        }).addTo(map);
+        L.marker([latitude, longitude]).addTo(map);
+      } else {
+        alert('Could not find the coordinates for the given location.');
+      }
     });
+  });
   </script>
 </body>
 </html>
