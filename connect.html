@@ -158,6 +158,8 @@
 
   <script>
 
+    import { initializeApp } from "firebase/app";
+
     const firebaseConfig = {
       apiKey: "AIzaSyAbUQiKggphds5itr36T2TObwWKyPVQCTo",
       authDomain: "findaplayer-c9da7.firebaseapp.com",
@@ -169,6 +171,7 @@
   };
   
   firebase.initializeApp(firebaseConfig);
+
   var database = firebase.database();
 
   var eventForm = document.getElementById('eventForm');
