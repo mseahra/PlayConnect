@@ -1,264 +1,159 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      display: flex;
-    }
-
-    .navbar {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
-
-    .navbar a {
-      display: inline-block;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 5px;
-      background-color: darkcyan;
-      color: white;
-      font-size: 16px;
-      text-align: center;
-      text-decoration: none;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      transition: background-color 0.3s ease;
-    }
-
-    .navbar a:hover {
-      background-color: cyan;
-    }
-
-    .sidebar {
-      flex: 1;
-      max-width: 20%;
-      height: 100vh;
-      background-color: #f2f2f2;
-      padding: 20px;
-    }
-
-    .event-list {
-      margin-top: 20px;
-    }
-
-    .event-item {
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 5px;
-      position: relative;
-    }
-
-    .event-item strong {
-      display: inline-block;
-      width: 100px;
-    }
-
-    .event-item .interact-button {
-      margin-top: 10px;
-      padding: 5px 10px;
-      border-radius: 5px;
-      background-color: darkcyan;
-      color: white;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .form-container {
-      flex: 1;
-      margin-left: 20px;
-    }
-
-    .close-button {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      width: 20px;
-      height: 20px;
-      background-color: darkred;
-      color: white;
-      font-size: 14px;
-      text-align: center;
-      line-height: 20px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .logo{
-      position: absolute;
-      top: 25px;
-      right: 40px;
-      width: 40px;
-      height: 40px;
-      background-image: url(football.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
-  </style>
-</head>
-<body>
-  <div class="logo"></div>
-  <div class="navbar">
-    <a href="index.html" class="button">Home</a>
-    <a href="connect.html" class="button">Connect</a>
-    <a href="maps.html" class="button">Maps</a>
-    <a href="login.html" class="button">Log In</a>
-  </div>
-  <div class="container">
-    <div class="sidebar">
-      <h2>Events</h2>
-      <div class="event-list"></div>
-    </div>
-    <div class="form-container">
-      <h2>Create Event</h2>
-      <form id="eventForm">
-        <div class="form-input">
-          <label for="location">Location:</label>
-          <input type="text" id="location" name="location" required>
-        </div>
-        <div class="form-input">
-          <label for="sport">Sport:</label>
-          <select id="sport" name="sport" required>
-            <option value="">Select a sport</option>
-            <option value="Football">Football</option>
-            <option value="Basketball">Basketball</option>
-            <option value="Tennis">Tennis</option>
-          </select>
-        </div>
-        <div class="form-input">
-          <label for="players">Number of Players:</label>
-          <input type="number" id="players" name="players" required>
-        </div>
-        <div class="form-input">
-          <label for="maxPlayers">Maximum Players:</label>
-          <input type="number" id="maxPlayers" name="maxPlayers" required>
-        </div>        
-        <div class="form-input">
-          <button type="submit" class="button">Create</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <script>
-
-    import { initializeApp } from "firebase/app";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAbUQiKggphds5itr36T2TObwWKyPVQCTo",
-      authDomain: "findaplayer-c9da7.firebaseapp.com",
-      databaseURL: "https://findaplayer-c9da7-default-rtdb.firebaseio.com",
-      projectId: "findaplayer-c9da7",
-      storageBucket: "findaplayer-c9da7.appspot.com",
-      messagingSenderId: "540450240179",
-      appId: "1:540450240179:web:80c4ba68960c27b4f3e2c6"
-  };
-  
-  firebase.initializeApp(firebaseConfig);
-
-  var database = firebase.database();
-
-  var eventForm = document.getElementById('eventForm');
-  var eventList = document.querySelector('.event-list');
-
-  eventForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    var locationInput = document.getElementById('location');
-    var sportSelect = document.getElementById('sport');
-    var playersInput = document.getElementById('players');
-    var maxPlayersInput = document.getElementById('maxPlayers');
-
-    var location = locationInput.value.trim();
-    var sport = sportSelect.value;
-    var players = playersInput.value.trim();
-    var maxPlayers = parseInt(maxPlayersInput.value.trim());
-
-    // Rest of your form validation logic here
-
-    var geocoder = L.Control.Geocoder.nominatim();
-    geocoder.geocode(location, function(results) {
-      if (results.length > 0) {
-        var latitude = results[0].center.lat;
-        var longitude = results[0].center.lng;
-
-        var eventItem = document.createElement('div');
-        eventItem.className = 'event-item';
-        eventItem.innerHTML = '<strong>Location:</strong> ' + location + '<br>' +
-          '<strong>Sport:</strong> ' + sport + '<br>' +
-          '<strong>Players:</strong> <span class="player-count">' + players + '</span><br>' +
-          '<strong>Maximum Players:</strong> ' + maxPlayers + '<br>' +
-          '<strong>Available Spaces:</strong> <span class="available-spaces">' + (maxPlayers - players) + '</span><br>' +
-          '<div class="interact-button">Join Event</div>' +
-          '<div class="close-button">&times;</div>';
-
-        eventItem.querySelector('.close-button').addEventListener('click', function() {
-          eventItem.remove();
-        });
-
-        eventItem.querySelector('.interact-button').addEventListener('click', function() {
-          var playerCountElement = eventItem.querySelector('.player-count');
-          var availableSpacesElement = eventItem.querySelector('.available-spaces');
-
-          var playerCount = parseInt(playerCountElement.textContent);
-          var availableSpaces = parseInt(availableSpacesElement.textContent);
-
-          if (availableSpaces > 0) {
-            playerCount++;
-            availableSpaces--;
-            playerCountElement.textContent = playerCount;
-            availableSpacesElement.textContent = availableSpaces;
-          }            
-        });
-
-        eventList.appendChild(eventItem);
-
-        locationInput.value = '';
-        sportSelect.value = '';
-        playersInput.value = '';
-
-        // Store event data in Firebase
-        database.ref('events').push({
-          location: location,
-          sport: sport,
-          players: players,
-          maxPlayers: maxPlayers
-        }, function(error) {
-          if (error) {
-            console.error("Error storing event data: ", error);
-          } else {
-            console.log("Event data stored successfully!");
-          }
-        });
-
-        // Create a Leaflet map and add a marker for the event location
-        var map = L.map('map').setView([latitude, longitude], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-          maxZoom: 18,
-        }).addTo(map);
-        L.marker([latitude, longitude]).addTo(map);
-      } else {
-        alert('Could not find the coordinates for the given location.');
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
       }
-    });
-  });
-  </script>
-</body>
+
+      .container {
+        display: flex;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: center;
+        margin: 20px;
+      }
+
+      .navbar a {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px;
+        border-radius: 5px;
+        background-color: darkcyan;
+        color: white;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease;
+      }
+
+      .navbar a:hover {
+        background-color: cyan;
+      }
+
+      .sidebar {
+        flex: 1;
+        max-width: 20%;
+        height: 100vh;
+        background-color: #f2f2f2;
+        padding: 20px;
+      }
+
+      .event-list {
+        margin-top: 20px;
+      }
+
+      .event-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        position: relative;
+      }
+
+      .event-item strong {
+        display: inline-block;
+        width: 100px;
+      }
+
+      .event-item .interact-button {
+        margin-top: 10px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: darkcyan;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .form-container {
+        flex: 1;
+        margin-left: 20px;
+      }
+
+      .close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 20px;
+        height: 20px;
+        background-color: darkred;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+        line-height: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .logo {
+        position: absolute;
+        top: 25px;
+        right: 40px;
+        width: 40px;
+        height: 40px;
+        background-image: url(football.png);
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="logo"></div>
+    <div class="navbar">
+      <a id="home-nav-button" href="index.html" class="navbar">Home</a>
+      <a id="connect-nav-button" href="connect.html" class="navbar">Connect</a>
+      <a id="maps-nav-button" href="maps.html" class="navbar">Maps</a>
+      <a id="login-nav-button" href="login.html" class="navbar">Log In</a>
+    </div>
+    <div class="container">
+      <div class="sidebar">
+        <h2>Events</h2>
+        <div class="event-list"></div>
+      </div>
+      <div class="form-container">
+        <h2>Create Event</h2>
+        <form
+          id="eventForm"
+          class="form"
+          onsubmit="event.preventDefault(); writeUserData();"
+        >
+          <div class="form-input">
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required />
+          </div>
+          <div class="form-input">
+            <label for="sport">Sport:</label>
+            <select id="sport" name="sport" required>
+              <option value="">Select a sport</option>
+              <option value="Football">Football</option>
+              <option value="Basketball">Basketball</option>
+              <option value="Tennis">Tennis</option>
+            </select>
+          </div>
+          <div class="form-input">
+            <label for="players">Number of Players:</label>
+            <input type="number" id="players-number" name="players" required />
+          </div>
+          <div class="form-input">
+            <button type="submit" class="button">Create</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="index.js"></script>
+  </body>
 </html>

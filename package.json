@@ -1,0 +1,16 @@
+{
+  "name": "findaplayer",
+  "version": "1.0.0",
+  "description": "This is a repository based on my Final Year Project for university",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx http-server -a localhost -p 8000 -c-1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
