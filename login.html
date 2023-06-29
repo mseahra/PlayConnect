@@ -2,157 +2,40 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      body {
-        margin: 0;
-        padding: 20px 0;
-        background-color: #f2f2f2;
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      button {
-        border: none;
-        margin: 0;
-        padding: 0;
-        width: auto;
-        overflow: visible;
-        background: transparent;
-        color: inherit;
-        font: inherit;
-        line-height: normal;
-      }
-
-      input,
-      label {
-        display: block;
-      }
-
-      .form-title {
-        margin-bottom: 20px;
-      }
-
-      .login-button {
-        background-color: darkcyan;
-        padding: 10px;
-        color: white;
-        border-radius: 4px;
-        margin: 20px 0;
-      }
-
-      .logo {
-        position: absolute;
-        top: 25px;
-        right: 40px;
-        width: 40px;
-        height: 40px;
-        background-image: url(football.png);
-        background-size: cover;
-        background-position: center;
-        border-radius: 50%;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-
-      .navbar {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-      }
-
-      .nav-button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 10px;
-        border-radius: 5px;
-        background-color: darkcyan;
-        color: #fff;
-        font-size: 16px;
-        text-align: center;
-        text-decoration: none;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-      }
-
-      .nav-button:hover {
-        background-color: cyan;
-      }
-
-      .nav-button:disabled {
-        background-color: grey;
-        cursor: not-allowed;
-      }
-
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-      }
-
-      .form {
-        display: flex;
-        flex-direction: column;
-      }
-
-      h2 {
-        margin: 0;
-      }
-
-      .form-group {
-        margin-bottom: 10px;
-        float: left;
-      }
-
-      .form-group input[type="text"],
-      .form-group input[type="password"],
-      .form-group input[type="email"] {
-        padding: 5px;
-        width: 200px;
-      }
-
-      .form-group button {
-        padding: 8px 15px;
-        background-color: #4caf50;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .signup-link {
-        text-align: center;
-        margin-top: 10px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body onload="onAuthChange()">
     <div class="logo"></div>
     <div class="navbar-container">
-      <button
-        disabled
-        id="home-nav-button"
-        href="index.html"
-        class="nav-button"
-      >
+      <a id="home-nav-button" href="index.html" class="nav-button disabled">
         Home
-      </button>
-      <button
-        disabled
+      </a>
+      <a
         id="connect-nav-button"
         href="connect.html"
-        class="nav-button"
+        class="nav-button disabled"
       >
         Connect
-      </button>
-      <a id="maps-nav-button" href="/maps.html" class="nav-button"> Maps </a>
-      <button id="login-nav-button" href="login.html" class="nav-button">
+      </a>
+      <a id="maps-nav-button" href="/maps.html" class="nav-button disabled">
+        Maps
+      </a>
+      <a
+        id="login-nav-button"
+        style="display: block"
+        href="login.html"
+        class="nav-button"
+      >
         Log In
-      </button>
+      </a>
+      <a
+        id="logout-nav-button"
+        style="display: none"
+        class="nav-button"
+        onclick="logOut()"
+      >
+        Log Out
+      </a>
     </div>
 
     <div class="form-container">
@@ -179,5 +62,6 @@
     </div>
 
     <script type="module" src="index.js"></script>
+    <script></script>
   </body>
 </html>

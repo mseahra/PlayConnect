@@ -5,118 +5,24 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-      }
-
-      .container {
-        display: flex;
-      }
-
-      .navbar {
-        display: flex;
-        justify-content: center;
-        margin: 20px;
-      }
-
-      .navbar a {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 10px;
-        border-radius: 5px;
-        background-color: darkcyan;
-        color: white;
-        font-size: 16px;
-        text-align: center;
-        text-decoration: none;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-      }
-
-      .navbar a:hover {
-        background-color: cyan;
-      }
-
-      .sidebar {
-        flex: 1;
-        max-width: 20%;
-        height: 100vh;
-        background-color: #f2f2f2;
-        padding: 20px;
-      }
-
-      .event-list {
-        margin-top: 20px;
-      }
-
-      .event-item {
-        margin-bottom: 10px;
-        padding: 10px;
-        background-color: #fff;
-        border-radius: 5px;
-        position: relative;
-      }
-
-      .event-item strong {
-        display: inline-block;
-        width: 100px;
-      }
-
-      .event-item .interact-button {
-        margin-top: 10px;
-        padding: 5px 10px;
-        border-radius: 5px;
-        background-color: darkcyan;
-        color: white;
-        text-decoration: none;
-        cursor: pointer;
-      }
-
-      .form-container {
-        flex: 1;
-        margin-left: 20px;
-      }
-
-      .close-button {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        width: 20px;
-        height: 20px;
-        background-color: darkred;
-        color: white;
-        font-size: 14px;
-        text-align: center;
-        line-height: 20px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
-
-      .logo {
-        position: absolute;
-        top: 25px;
-        right: 40px;
-        width: 40px;
-        height: 40px;
-        background-image: url(football.png);
-        background-size: cover;
-        background-position: center;
-        border-radius: 50%;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-    </style>
+    <link rel="stylesheet" href="styles/connect-styles.css" />
   </head>
-  <body>
+  <body onload="connect(); onAuthChange();">
     <div class="logo"></div>
     <div class="navbar">
       <a id="home-nav-button" href="index.html" class="navbar">Home</a>
       <a id="connect-nav-button" href="connect.html" class="navbar">Connect</a>
       <a id="maps-nav-button" href="maps.html" class="navbar">Maps</a>
       <a id="login-nav-button" href="login.html" class="navbar">Log In</a>
+      <a
+        id="logout-nav-button"
+        style="display: none"
+        class="nav-button"
+        onclick="logOut()"
+        href="login.html"
+      >
+        Log Out
+      </a>
     </div>
     <div class="container">
       <div class="sidebar">

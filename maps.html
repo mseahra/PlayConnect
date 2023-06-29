@@ -1,157 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  </head>
 
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .sidebar {
-      flex: 1;
-      max-width: 20%;
-      height: 100vh;
-      background-color: #f2f2f2;
-      padding: 20px;
-      overflow-y: scroll;
-    }
-
-    .map-container {
-      flex: 4;
-      height: calc(100vh - 40px);
-    }
-
-    .user-profiles {
-      margin-top: 20px;
-    }
-
-    .user-profile {
-      margin-bottom: 20px;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .user-profile:hover {
-      background-color: #e6e6e6;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
-
-    .button {
-      display: inline-block;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 5px;
-      background-color: darkcyan;
-      color: white;
-      font-size: 16px;
-      text-align: center;
-      text-decoration: none;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: cyan;
-    }
-
-    .logo {
-      position: absolute;
-      top: 25px;
-      right: 40px;
-      width: 40px;
-      height: 40px;
-      background-image: url(football.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-</head>
-<body>
-  <div class="logo"></div>
-  <div class="buttons">
-    <a href="index.html" class="button">Home</a>
-    <a href="connect.html" class="button">Connect</a>
-    <a href="maps.html" class="button">Maps</a>
-    <a href="login.html" class="button">Log In</a>
-  </div>
-
-  <div class="container">
-    <div class="sidebar">
-      <h2>User Profiles</h2>
-      <div class="user-profiles"></div>
-      <label for="start">Start Postcode:</label>
-      <input type="text" id="start" placeholder="Enter start postcode">
-      <label for="end">End Postcode:</label>
-      <input type="text" id="end" placeholder="Enter end postcode">
-      <button id="calculate-route">Calculate Route</button>
+  <body onload="maps(); onAuthChange();">
+    <div class="logo"></div>
+    <div class="navbar-container">
+      <a id="home-nav-button" href="index.html" class="nav-button"> Home </a>
+      <a id="connect-nav-button" href="connect.html" class="nav-button">
+        Connect
+      </a>
+      <a id="maps-nav-button" href="/maps.html" class="nav-button"> Maps </a>
+      <a id="login-nav-button" href="login.html" class="nav-button"> Log In </a>
+      <a
+        id="logout-nav-button"
+        style="display: none"
+        class="nav-button"
+        onclick="logOut()"
+        href="login.html"
+      >
+        Log Out
+      </a>
     </div>
-    <div class="map-container" id="map"></div>
-  </div>
 
-  <script>
-    var map = L.map('map').setView([51.518960, -0.372410], 11);
-    mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: 'Leaflet &copy; ' + mapLink + ', contribution', maxZoom: 18 }).addTo(map);
+    <div class="container">
+      <div class="sidebar">
+        <h2>User Profiles</h2>
+        <div class="user-profiles"></div>
+        <label for="start">Start Postcode:</label>
+        <input type="text" id="start" placeholder="Enter start postcode" />
+        <label for="end">End Postcode:</label>
+        <input type="text" id="end" placeholder="Enter end postcode" />
+        <button id="calculate-route" onclick="calculateRoute()">
+          Calculate Route
+        </button>
+      </div>
 
+      <div class="map-container" id="map"></div>
+    </div>
+    <script type="module" src="index.js"></script>
+    <script>
+      var map = L.map("map").setView([51.51896, -0.37241], 11);
+      mapLink = "<a href='http://openstreetmap.org'>OpenStreetMap</a>";
+      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        attribution: "Leaflet &copy; " + mapLink + ", contribution",
+        maxZoom: 18,
+      }).addTo(map);
 
-
-    var startInput = document.getElementById('start');
-    var endInput = document.getElementById('end');
-    var calculateButton = document.getElementById('calculate-route');
-
-    calculateButton.addEventListener('click', function() {
-      var startPostcode = startInput.value;
-      var endPostcode = endInput.value;
-
-      var geocoder = L.Control.Geocoder.nominatim();
-
-      geocoder.geocode(startPostcode, function(results) {
-        var startLocation = results[0].center;
-
-        geocoder.geocode(endPostcode, function(results) {
-          var endLocation = results[0].center;
-
-          var control = L.Routing.control({
-            waypoints: [
-              L.latLng(startLocation.lat, startLocation.lng),
-              L.latLng(endLocation.lat, endLocation.lng)
-            ]
-          }).addTo(map);
-
-          control.on('routesfound', function(e) {
-            var routes = e.routes;
-            console.log(routes);
-
-            e.routes[0].coordinates.forEach(function(coord, index) {
-              setTimeout(function() {
-                marker.setLatLng([coord.lat, coord.lng]);
-              }, 100 * index);
-            });
-          });
-        });
-      });
-    });
-  </script>
-</body>
+      var calculateButton = document.getElementById("calculate-route");
+    </script>
+  </body>
 </html>

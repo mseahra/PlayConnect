@@ -11,6 +11,13 @@
         margin: 0;
         padding: 0;
         font-family: Arial, sans-serif;
+        background: linear-gradient(
+          to bottom right,
+          #1d2c3f 0%,
+          #202e3d 50%,
+          #354c64 100%
+        ); /* Gradient background */
+        color: #fff; /* Text color */
       }
 
       .container {
@@ -40,7 +47,7 @@
         display: inline-block;
         margin: 10px;
         font-size: 24px;
-        color: darkcyan;
+        color: white;
         text-decoration: none;
       }
 
@@ -50,7 +57,7 @@
 
       .sports-fixtures {
         width: 500px;
-        background-color: #f2f2f2;
+        background-color: #5b6d81;
         padding: 20px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -75,18 +82,33 @@
         display: inline-block;
         padding: 10px 20px;
         margin: 10px;
-        border-radius: 5px;
-        background-color: darkcyan;
-        color: white;
+        border: none;
+        border-radius: 4px;
+        background-color: #2c3e50; /* Darker color */
+        color: #fff;
         font-size: 16px;
         text-align: center;
         text-decoration: none;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         transition: background-color 0.3s ease;
+        position: relative;
+        overflow: hidden;
       }
 
-      .button:hover {
-        background-color: cyan;
+      .button::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: -100%;
+        width: 100%;
+        height: 2px;
+        background-color: #fff;
+        transition: left 0.3s ease;
+      }
+
+      .button:hover::before {
+        left: 0;
       }
 
       .logo {
@@ -113,13 +135,22 @@
       import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
     </script>
   </head>
-  <body>
+  <body onload="onAuthChange()">
     <div class="logo"></div>
     <div class="navbar">
       <a id="home-nav-button" href="index.html" class="button">Home</a>
       <a id="connect-nav-button" href="connect.html" class="button">Connect</a>
       <a id="maps-nav-button" href="maps.html" class="button">Maps</a>
       <a id="login-nav-button" href="login.html" class="button">Log In</a>
+      <a
+        id="logout-nav-button"
+        style="display: none"
+        class="nav-button"
+        onclick="logOut()"
+        href="login.html"
+      >
+        Log Out
+      </a>
     </div>
 
     <div class="container">

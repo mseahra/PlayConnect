@@ -2,6 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getAuth,
+  signOut,
   onAuthStateChanged,
   updateProfile,
   createUserWithEmailAndPassword,
@@ -13,6 +14,7 @@ import {
   set,
   query,
   limitToLast,
+  push,
   child,
   get,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
@@ -29,7 +31,34 @@ const app = initializeApp({
 });
 
 const auth = getAuth();
-const database = getDatabase(app);
+
+function onAuthChange() {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log(user);
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      document.querySelector("#home-nav-button").classList.remove("disabled");
+      document
+        .querySelector("#connect-nav-button")
+        .classList.remove("disabled");
+      document.querySelector("#maps-nav-button").classList.remove("disabled");
+      var loginButton = document.getElementById("login-nav-button");
+      var logoutButton = document.getElementById("logout-nav-button");
+
+      loginButton.style.display = "none";
+
+      logoutButton.style.display = "block";
+
+      return false;
+
+      // ...
+    } else {
+      // User is signed ot
+      // ...
+    }
+  });
+}
 
 function logIn() {
   console.log("hello");
@@ -47,18 +76,38 @@ function logIn() {
       const accessToken = userCredential.user.accessToken;
       console.log(userCredential);
       if (accessToken) {
-        window.user = user;
-        document.querySelector("#home-nav-button").removeAttribute("disabled");
+        console.log(accessToken);
+        document.querySelector("#home-nav-button").classList.remove("disabled");
         document
           .querySelector("#connect-nav-button")
-          .removeAttribute("disabled");
-        document.querySelector("#maps-nav-button").removeAttribute("disabled");
+          .classList.remove("disabled");
+        document.querySelector("#maps-nav-button").classList.remove("disabled");
+
+        window.location.replace("/");
       }
     })
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.log(errorCode);
+    });
+}
+
+async function logOut() {
+  var logInEmailValue = document.querySelector("#login-email").value;
+  var logInPassowrdValue = document.querySelector("#login-password").value;
+  console.log({
+    logInEmailValue,
+    logInPassowrdValue,
+  });
+
+  signOut(auth)
+    .then(() => {
+      // Sign-out successful.
+      window.location.reload();
+    })
+    .catch((error) => {
+      // An error happened.
     });
 }
 
@@ -80,10 +129,6 @@ async function signUp() {
   } catch (err) {
     console.log(err);
   }
-  console.log({
-    signUpEmailValue,
-    signUpPassowrdValue,
-  });
 }
 
 function writeUserData() {
@@ -95,13 +140,15 @@ function writeUserData() {
   var email = auth.currentUser.email;
 
   const db = getDatabase();
-  set(ref(db, "users/" + userId), {
+  push(ref(db, "users/" + userId), {
     username: name,
     email: email,
     location: locationValue,
     sport: sportValue,
     playersNumber: playersNumberValue,
   });
+
+  window.location.reload();
 }
 
 function handleEventClick(e, location) {
@@ -110,26 +157,27 @@ function handleEventClick(e, location) {
 }
 
 function maps() {
+  onAuthChange();
   let userId;
   onAuthStateChanged(auth, (user) => {
-    console.log(user);
     if (user) {
       const dbRef = ref(getDatabase());
       console.log(user.uid);
       get(child(dbRef, `users/`))
         .then((snapshot) => {
           if (snapshot.exists()) {
-            console.log(snapshot.val());
             Object.values(snapshot.val()).forEach((v, i) => {
               console.log({ v, i });
               var sidebar = document.querySelector(".sidebar");
-              sidebar.innerHTML += `
-                <div class="sidebar-event-wrapper" onclick="handleEventClick(event, '${v.location}')">
-                    <p class="sport">Sport: ${v.sport}</p> 
-                    <p class="location">Location: ${v.location}</p> 
-                    <p class="players-number">Number of Players: ${v.playersNumber}</p>
+              Object.values(v).forEach((value, index) => {
+                sidebar.innerHTML += `
+                <div class="sidebar-event-wrapper" onclick="handleEventClick(event, '${value.location}')">
+                    <p class="sport">Sport: ${value.sport}</p> 
+                    <p class="location">Location: ${value.location}</p> 
+                    <p class="players-number">Number of Players: ${value.playersNumber}</p>
                 </div>
-                `;
+            `;
+              });
             });
           } else {
             console.log("No data available");
@@ -144,10 +192,89 @@ function maps() {
   });
 }
 
+function connect() {
+  onAuthChange();
+  onAuthStateChanged(auth, (user) => {
+    console.log(user);
+    if (user) {
+      const dbRef = ref(getDatabase());
+      console.log(user.uid);
+
+      const userId = user.uid;
+
+      get(child(dbRef, `users/${userId}`))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const snapshots = snapshot.val();
+
+            console.log({ snapshots });
+            Object.values(snapshot.val()).forEach((v, i) => {
+              console.log({ v, i });
+              var sidebar = document.querySelector(".sidebar");
+              sidebar.innerHTML += `
+                <div class="sidebar-event-wrapper" onclick="handleEventClick(event, '${v.location}')">
+                    <p class="sport">Sport: ${v.sport}</p> 
+                    <p class="location">Location: ${v.location}</p> 
+                    <p class="players-number">Number of Players: ${v.playersNumber}</p>
+                </div>
+            `;
+            });
+          } else {
+            console.log("No data available");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      console.log("No user");
+    }
+  });
+}
+
+function calculateRoute() {
+  var startInput = document.getElementById("start");
+  var endInput = document.getElementById("end");
+  var startPostcode = startInput.value;
+  var endPostcode = endInput.value;
+
+  var geocoder = L.Control.Geocoder.nominatim();
+
+  geocoder.geocode(startPostcode, function (results) {
+    var startLocation = results[0].center;
+
+    geocoder.geocode(endPostcode, function (results) {
+      var endLocation = results[0].center;
+
+      var control = L.Routing.control({
+        waypoints: [
+          L.latLng(startLocation.lat, startLocation.lng),
+          L.latLng(endLocation.lat, endLocation.lng),
+        ],
+      }).addTo(map);
+
+      control.on("routesfound", function (e) {
+        var routes = e.routes;
+        console.log(routes);
+
+        e.routes[0].coordinates.forEach(function (coord, index) {
+          setTimeout(function () {
+            marker.setLatLng([coord.lat, coord.lng]);
+          }, 100 * index);
+        });
+      });
+    });
+  });
+}
+
+window.calculateRoute = calculateRoute;
 window.writeUserData = writeUserData;
+window.onAuthChange = onAuthChange;
 window.logIn = logIn;
 window.signUp = signUp;
 window.maps = maps;
 window.handleEventClick = handleEventClick;
+window.logOut = logOut;
+window.connect = connect;
 
 export { app };
