@@ -72,7 +72,6 @@ function logIn() {
   signInWithEmailAndPassword(auth, logInEmailValue, logInPassowrdValue)
     .then((userCredential) => {
       // Signed in
-      const user = userCredential.user;
       const accessToken = userCredential.user.accessToken;
       console.log(userCredential);
       if (accessToken) {
@@ -158,7 +157,6 @@ function handleEventClick(e, location) {
 
 function maps() {
   onAuthChange();
-  let userId;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const dbRef = ref(getDatabase());
