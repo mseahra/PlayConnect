@@ -54,6 +54,25 @@
             <input type="number" id="players-number" name="players" required />
           </div>
           <div class="form-input">
+            <label for="rating">Rating Required:</label>
+            <select id="rating" name="rating" required>
+              <option value="">Select a Rating</option>
+              <option value="1 Star">1</option>
+              <option value="2 Stars">2</option>
+              <option value="3 Stars">3</option>
+              <option value="4 Stars">4</option>
+              <option value="5 Stars">5</option>
+            </select>
+          </div>
+          <div class="form-input">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required />
+          </div>
+          <div class="form-input">
+            <label for="time">Time:</label>
+            <input type="time" id="time" name="time" required />
+          </div>
+          <div class="form-input">
             <button type="submit" class="button">Create</button>
           </div>
         </form>

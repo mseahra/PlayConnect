@@ -134,6 +134,9 @@ function writeUserData() {
   var locationValue = document.querySelector("#location").value;
   var sportValue = document.querySelector("#sport").value;
   var playersNumberValue = document.querySelector("#players-number").value;
+  var ratingsValue = document.querySelector("#rating").value;
+  var dateValue = document.querySelector("#date").value;
+  var timeValue = document.querySelector("#time").value;
   var userId = auth.currentUser.uid;
   var name = auth.currentUser.displayName;
   var email = auth.currentUser.email;
@@ -145,6 +148,9 @@ function writeUserData() {
     location: locationValue,
     sport: sportValue,
     playersNumber: playersNumberValue,
+    rating: ratingsValue,
+    date: dateValue,
+    time: timeValue,
   });
 
   window.location.reload();
@@ -173,6 +179,9 @@ function maps() {
                     <p class="sport">Sport: ${value.sport}</p> 
                     <p class="location">Location: ${value.location}</p> 
                     <p class="players-number">Number of Players: ${value.playersNumber}</p>
+                    <p class="rating">Rating Required: ${value.rating}</p>
+                    <p class="date">Date: ${date.rating}</p>
+                    <p class="time">Time: ${time.rating}</p>
                 </div>
             `;
               });
@@ -214,6 +223,9 @@ function connect() {
                     <p class="sport">Sport: ${v.sport}</p> 
                     <p class="location">Location: ${v.location}</p> 
                     <p class="players-number">Number of Players: ${v.playersNumber}</p>
+                    <p class="rating">Rating Required: ${v.rating}</p>
+                    <p class="date">Date: ${v.date}</p>
+                    <p class="time">Time: ${v.time}</p>
                 </div>
             `;
             });
