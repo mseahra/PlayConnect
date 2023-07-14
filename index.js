@@ -180,8 +180,8 @@ function maps() {
                     <p class="location">Location: ${value.location}</p> 
                     <p class="players-number">Number of Players: ${value.playersNumber}</p>
                     <p class="rating">Rating Required: ${value.rating}</p>
-                    <p class="date">Date: ${date.rating}</p>
-                    <p class="time">Time: ${time.rating}</p>
+                    <p class="date">Date: ${value.date}</p>
+                    <p class="time">Time: ${value.time}</p>
                 </div>
             `;
               });
