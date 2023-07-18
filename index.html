@@ -2,222 +2,65 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(
-          to bottom right,
-          #1d2c3f 0%,
-          #202e3d 50%,
-          #354c64 100%
-        ); /* Gradient background */
-        height: 100vh;
-        color: #fff; /* Text color */
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 75vh;
-      }
-
-      .title {
-        font-size: 32px;
-        margin-bottom: 20px;
-      }
-
-      .summary {
-        width: 500px;
-        text-align: center;
-        margin-bottom: 30px;
-      }
-
-      .social-links {
-        margin-bottom: 30px;
-      }
-
-      .social-link {
-        display: inline-block;
-        margin: 10px;
-        font-size: 24px;
-        color: white;
-        text-decoration: none;
-      }
-
-      .social-link i {
-        vertical-align: middle;
-      }
-
-      .sports-fixtures {
-        width: 500px;
-        background-color: #5b6d81;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-
-      .fixture {
-        margin-bottom: 10px;
-      }
-
-      .fixture strong {
-        display: inline-block;
-        width: 100px;
-      }
-
-      .navbar {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-      }
-
-      .button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 10px;
-        border: none;
-        border-radius: 4px;
-        background-color: #2c3e50; /* Darker color */
-        color: #fff;
-        font-size: 16px;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .button::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: -100%;
-        width: 100%;
-        height: 2px;
-        background-color: #fff;
-        transition: left 0.3s ease;
-      }
-
-      .button:hover::before {
-        left: 0;
-      }
-
-      .logo {
-        position: absolute;
-        top: 25px;
-        right: 40px;
-        width: 40px;
-        height: 40px;
-        background-image: url(football.png);
-        background-size: cover;
-        background-position: center;
-        border-radius: 50%;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-      }
-    </style>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-
-      // If you enabled Analytics in your project, add the Firebase SDK for Google Analytics
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
-
-      // Add Firebase products that you want to use
-      import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-      import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-    </script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body onload="onAuthChange()">
     <div class="logo"></div>
-    <div class="navbar">
-      <a id="home-nav-button" href="index.html" class="button">Home</a>
-      <a id="connect-nav-button" href="connect.html" class="button">Connect</a>
-      <a id="maps-nav-button" href="maps.html" class="button">Maps</a>
-      <a id="login-nav-button" href="login.html" class="button">Log In</a>
+    <div class="navbar-container">
+      <a id="home-nav-button" href="home.html" class="nav-button disabled">
+        Home
+      </a>
+      <a
+        id="connect-nav-button"
+        href="connect.html"
+        class="nav-button disabled"
+      >
+        Connect
+      </a>
+      <a id="maps-nav-button" href="/maps.html" class="nav-button disabled">
+        Maps
+      </a>
+      <a
+        id="login-nav-button"
+        style="display: block"
+        href="index.html"
+        class="nav-button"
+      >
+        Log In
+      </a>
       <a
         id="logout-nav-button"
         style="display: none"
         class="nav-button"
         onclick="logOut()"
-        href="login.html"
       >
         Log Out
       </a>
     </div>
 
-    <div class="container">
-      <h1 class="title">Welcome to the PlayConnect Web Application!</h1>
-      <div class="summary">
-        <p>
-          This web application allows you to connect with other sports
-          enthusiasts, find sports venues, and join events in your area.
-        </p>
-        <p>
-          Stay updated with the latest sports fixtures and connect with fellow
-          sports lovers.
-        </p>
-      </div>
-
-      <div class="sports-fixtures">
-        <h2>Upcoming Sports Fixtures</h2>
-        <div class="fixture">
-          <strong>Date:</strong> May 22, 2023
-          <br />
-          <strong>Sport:</strong> Football
-          <br />
-          <strong>Location:</strong> Goals Wembley
+    <div class="form-container">
+      <h2 class="form-title">Login</h2>
+      <form class="form" onsubmit="event.preventDefault(); logIn();">
+        <div class="form-group">
+          <label for="login-email">Email:</label>
+          <input type="email" id="login-email" name="login-email" required />
         </div>
-        <div class="fixture">
-          <strong>Date:</strong> May 25, 2023
-          <br />
-          <strong>Sport:</strong> Basketball
-          <br />
-          <strong>Location:</strong> Shepherds Bush Court
+        <div class="form-group">
+          <label for="login-password">Password:</label>
+          <input
+            type="password"
+            id="login-password"
+            name="login-password"
+            required
+          />
         </div>
-        <div class="fixture">
-          <strong>Date:</strong> May 28, 2023
-          <br />
-          <strong>Sport:</strong> Tennis
-          <br />
-          <strong>Location:</strong> Elthorne Park
-        </div>
-      </div>
-      <div class="social-links">
-        <a
-          href="https://twitter.com/mandevseahra"
-          class="social-link"
-          target="_blank"
-          ><i class="fab fa-twitter"></i
-        ></a>
-        <a
-          href="https://facebook.com/mandevseahra"
-          class="social-link"
-          target="_blank"
-          ><i class="fab fa-facebook"></i
-        ></a>
-        <a
-          href="https://instagram.com/mandevseahra"
-          class="social-link"
-          target="_blank"
-          ><i class="fab fa-instagram"></i
-        ></a>
-        <a
-          href="https://linkedin.com/in/mandevseahra"
-          class="social-link"
-          target="_blank"
-          ><i class="fab fa-linkedin"></i
-        ></a>
+        <button type="submit" class="login-button">Login</button>
+      </form>
+      <div class="signup-link">
+        Don't have an account? <a href="signup.html">Sign Up</a>
       </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
+    <script type="module" src="index.js"></script>
   </body>
 </html>
